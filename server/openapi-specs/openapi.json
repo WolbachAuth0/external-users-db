@@ -1,0 +1,981 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Okta | Auth0 Custom DB Example API",
+    "description": "# Introduction\n\nA key feature of Auth0 is to permit the Auth0 authorization server to proxy logins to external sources of users. This project is intended as an example of a custom DB connection into an Auth0. This page documents the RESTful API endpoints for that custom DB connection.\n\n# OpenAPI Specification\n\nThis API is documented in **OpenAPI format**. \n\n# Cross-Origin Resource Sharing\n\n\n# Authentication\n\n",
+    "termsOfService": "undefined/terms",
+    "contact": {
+      "name": "Aaron Wolbach",
+      "email": "aaron.wolbach@okta.com",
+      "url": "undefined/support"
+    },
+    "license": {
+      "name": "UNLICENSED",
+      "url": "https://choosealicense.com/licenses/"
+    },
+    "version": "1.0.1",
+    "x-logo": {
+      "url": "/public/images/okta-auth0-logo.svg",
+      "altText": "Okta | Auth0"
+    }
+  },
+  "servers": [
+    {
+      "url": "undefined/api/v1",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/api/v1/users/login": {
+      "get": {
+        "summary": "Log a user in",
+        "description": "",
+        "security": {
+          "basicAuth": []
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
+                    },
+                    "controller": {
+                      "type": "string",
+                      "description": "The name of the controller which responded to the request."
+                    },
+                    "resource": {
+                      "type": "string",
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Paginated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "summary": "Search Users by query",
+        "description": "Find a list users which match the query parameters passed in the url",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/populate"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
+                    },
+                    "controller": {
+                      "type": "string",
+                      "description": "The name of the controller which responded to the request."
+                    },
+                    "resource": {
+                      "type": "string",
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Paginated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "summary": "Find User by ID",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/populate"
+          }
+        ],
+        "description": "Finds a User document that has the passed id.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
+                    },
+                    "controller": {
+                      "type": "string",
+                      "description": "The name of the controller which responded to the request."
+                    },
+                    "resource": {
+                      "type": "string",
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update User",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "requestBody": {
+          "description": "Updated author data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "description": "Describe the columns of the table with the passed table name.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
+                    },
+                    "controller": {
+                      "type": "string",
+                      "description": "The name of the controller which responded to the request."
+                    },
+                    "resource": {
+                      "type": "string",
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Paginated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete User",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "description": "Removes the single quote associated to the passed id from the database.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
+                    },
+                    "controller": {
+                      "type": "string",
+                      "description": "The name of the controller which responded to the request."
+                    },
+                    "resource": {
+                      "type": "string",
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Paginated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/api/v1/users/signup": {
+      "post": {
+        "summary": "Create User",
+        "description": "Find a list users which match the query parameters passed in the url",
+        "requestBody": {
+          "description": "User to add to the system",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
+                    },
+                    "controller": {
+                      "type": "string",
+                      "description": "The name of the controller which responded to the request."
+                    },
+                    "resource": {
+                      "type": "string",
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "description": "A User profile document",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The unique identifier of this document."
+          },
+          "email": {
+            "type": "string",
+            "example": "abraham.lincoln@gmail.com",
+            "description": "The user's email address"
+          },
+          "verified": {
+            "type": "boolean",
+            "example": false,
+            "description": "Has the user verified his or her email address?"
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true,
+            "example": "MrPre$ident1861"
+          },
+          "profile": {
+            "type": "object",
+            "description": "A collection of profile information on the user"
+          },
+          "createdAt": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The date and time that this document was added to the database."
+          },
+          "updatedAt": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The data and time that this document was last updated."
+          }
+        }
+      },
+      "Paginated": {
+        "type": "object",
+        "description": "",
+        "properties": {
+          "docs": {
+            "type": "array",
+            "description": "List of documents matching the query.",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/User"
+                }
+              ]
+            }
+          },
+          "totalDocs": {
+            "type": "integer",
+            "description": ""
+          },
+          "limit": {
+            "type": "integer",
+            "description": ""
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": ""
+          },
+          "page": {
+            "type": "integer",
+            "description": ""
+          },
+          "pagingCounter": {
+            "type": "integer",
+            "description": ""
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": ""
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": ""
+          },
+          "prevPage": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": ""
+          },
+          "nextPage": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": ""
+          }
+        }
+      }
+    },
+    "parameters": {
+      "id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Internal ID of the requested resource",
+        "schema": {
+          "type": "string"
+        },
+        "example": "60b9533a479ac9a2804dca7b"
+      },
+      "populate": {
+        "name": "populate",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": true,
+        "description": "Whether or not to populate sub-documents.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "T",
+            "F"
+          ],
+          "default": "F"
+        },
+        "example": "T"
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": true,
+        "description": "The maximum number of documents to return from the query.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 50
+        },
+        "example": 25
+      },
+      "page": {
+        "name": "page",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": true,
+        "description": "The page number to return fromt the query",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "example": 2
+      }
+    },
+    "securitySchemes": [
+      {
+        "basicAuth": {
+          "type": "https",
+          "scheme": "basic",
+          "in": "header",
+          "name": "Authorization",
+          "description": "Provide username and password base 64 encoded in the Authorization header."
+        }
+      },
+      {
+        "bearerToken": {
+          "type": "https",
+          "scheme": "bearer",
+          "bearerFormat": "JWT",
+          "in": "header",
+          "name": "Authorization",
+          "description": "Provide an access token in a JWT format. Access token should be generated an properly signed by the authoriztion server."
+        }
+      }
+    ],
+    "requestBodies": {
+      "loginUser": {
+        "description": "Updated quote data",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "getUser": {
+        "description": "Get a user ",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "OK",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method used in the request."
+                },
+                "controller": {
+                  "type": "string",
+                  "description": "The name of the controller which responded to the request."
+                },
+                "resource": {
+                  "type": "string",
+                  "description": "The URL of the requested resource."
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Was the request successful?"
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "The HTTP status code"
+                },
+                "statusText": {
+                  "type": "string",
+                  "description": "A description of the http status code."
+                },
+                "data": {
+                  "type": "object",
+                  "description": "An object containing the successful response data."
+                }
+              }
+            }
+          }
+        }
+      },
+      "201": {
+        "description": "CREATED",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method used in the request."
+                },
+                "controller": {
+                  "type": "string",
+                  "description": "The name of the controller which responded to the request."
+                },
+                "resource": {
+                  "type": "string",
+                  "description": "The URL of the requested resource."
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Was the request successful?"
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "The HTTP status code"
+                },
+                "statusText": {
+                  "type": "string",
+                  "description": "A description of the http status code."
+                },
+                "data": {
+                  "type": "object",
+                  "description": "An object containing the successful response data."
+                }
+              }
+            }
+          }
+        }
+      },
+      "204": {
+        "description": "NO CONTENT",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method used in the request."
+                },
+                "controller": {
+                  "type": "string",
+                  "description": "The name of the controller which responded to the request."
+                },
+                "resource": {
+                  "type": "string",
+                  "description": "The URL of the requested resource."
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Was the request successful?"
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "The HTTP status code"
+                },
+                "statusText": {
+                  "type": "string",
+                  "description": "A description of the http status code."
+                },
+                "data": {
+                  "type": "object",
+                  "description": "An object containing the successful response data."
+                }
+              }
+            }
+          }
+        }
+      },
+      "304": {
+        "description": "NOT MODIFIED",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method used in the request."
+                },
+                "controller": {
+                  "type": "string",
+                  "description": "The name of the controller which responded to the request."
+                },
+                "resource": {
+                  "type": "string",
+                  "description": "The URL of the requested resource."
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Was the request successful?"
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "The HTTP status code"
+                },
+                "statusText": {
+                  "type": "string",
+                  "description": "A description of the http status code."
+                },
+                "data": {
+                  "type": "object",
+                  "description": "An object containing the successful response data."
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "BAD REQUEST",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method used in the request."
+                },
+                "controller": {
+                  "type": "string",
+                  "description": "The name of the controller which responded to the request."
+                },
+                "resource": {
+                  "type": "string",
+                  "description": "The URL of the requested resource."
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Was the request successful?"
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "The HTTP status code"
+                },
+                "statusText": {
+                  "type": "string",
+                  "description": "A description of the http status code."
+                },
+                "data": {
+                  "type": "object",
+                  "description": "An object containing the successful response data."
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "UNAUTHORIZED",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method used in the request."
+                },
+                "controller": {
+                  "type": "string",
+                  "description": "The name of the controller which responded to the request."
+                },
+                "resource": {
+                  "type": "string",
+                  "description": "The URL of the requested resource."
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Was the request successful?"
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "The HTTP status code"
+                },
+                "statusText": {
+                  "type": "string",
+                  "description": "A description of the http status code."
+                },
+                "data": {
+                  "type": "object",
+                  "description": "An object containing the successful response data."
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "FORBIDDEN",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method used in the request."
+                },
+                "controller": {
+                  "type": "string",
+                  "description": "The name of the controller which responded to the request."
+                },
+                "resource": {
+                  "type": "string",
+                  "description": "The URL of the requested resource."
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Was the request successful?"
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "The HTTP status code"
+                },
+                "statusText": {
+                  "type": "string",
+                  "description": "A description of the http status code."
+                },
+                "data": {
+                  "type": "object",
+                  "description": "An object containing the successful response data."
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "NOT FOUND",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method used in the request."
+                },
+                "controller": {
+                  "type": "string",
+                  "description": "The name of the controller which responded to the request."
+                },
+                "resource": {
+                  "type": "string",
+                  "description": "The URL of the requested resource."
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Was the request successful?"
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "The HTTP status code"
+                },
+                "statusText": {
+                  "type": "string",
+                  "description": "A description of the http status code."
+                },
+                "data": {
+                  "type": "object",
+                  "description": "An object containing the successful response data."
+                }
+              }
+            }
+          }
+        }
+      },
+      "501": {
+        "description": "NOT IMPLEMENTED",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method used in the request."
+                },
+                "controller": {
+                  "type": "string",
+                  "description": "The name of the controller which responded to the request."
+                },
+                "resource": {
+                  "type": "string",
+                  "description": "The URL of the requested resource."
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Was the request successful?"
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "The HTTP status code"
+                },
+                "statusText": {
+                  "type": "string",
+                  "description": "A description of the http status code."
+                },
+                "data": {
+                  "type": "object",
+                  "description": "An object containing the successful response data."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

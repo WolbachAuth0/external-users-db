@@ -1,0 +1,45 @@
+{
+  "name": "external-users-db",
+  "version": "1.0.0",
+  "description": "A RESTful API with a mongoDB datastore. Act as an external store of users for example Auth0 custom DB connection.",
+  "main": "startup.js",
+  "scripts": {
+    "start": "node startup.js prod",
+    "dev": "nodemon startup.js dev",
+    "local": "nodemon startup.js local",
+    "build-spec": "node ./server/scripts/build-spec.js",
+    "test": "test"
+  },
+  "keywords": [
+    "auth0",
+    "okta",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "aaron.wolbach@okta.com",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "express-jwt": "^7.7.5",
+    "express-openid-connect": "^2.7.2",
+    "express-winston": "^4.2.0",
+    "helmet": "^5.1.0",
+    "json-to-pretty-yaml": "^1.2.2",
+    "jsonschema": "^1.4.1",
+    "jwks-rsa": "^2.1.3",
+    "moment": "^2.29.3",
+    "mongoose": "^6.3.4",
+    "mongoose-paginate-v2": "^1.6.3",
+    "serve-static": "^1.15.0",
+    "winston": "^3.7.2"
+  },
+  "devDependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
+    "jsonfile": "^6.1.0",
+    "nodemon": "^2.0.16"
+  }
+}
