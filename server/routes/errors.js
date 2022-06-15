@@ -10,11 +10,11 @@ router
     // render 404 error as json
     try {
       const status = 404
-      const message = 'The requested route is not handled by the server. Please see the API documentation for a listing of handled routes.'
       const data = {
+        message: 'The requested route is not handled by the server. Please see the API documentation for a listing of handled routes.',
         documentation: '/api/docs'
       }
-      const json = controller.formatResponse(req, res, { status, message, data })
+      const json = controller.formatResponse(req, res, { status, data })
       res.status(status).json(json)
     } catch (error) {
       const json = controller.errorHandler(req, res, error)
