@@ -8,7 +8,7 @@
     "dev": "nodemon startup.js dev",
     "local": "nodemon startup.js local",
     "build-spec": "node ./tasks/build-spec.js",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest --coverage"
+    "test": "jest"
   },
   "keywords": [
     "auth0",
