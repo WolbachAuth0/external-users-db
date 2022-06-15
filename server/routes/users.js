@@ -9,7 +9,7 @@ router.route('/login')
     controller.decodeBasicAuth,
     async (req, res) => {
       try {
-        console.log(req.email, req.password)
+        // console.log(req.email, req.password)
         const { status, data } = await service.login(req.email, req.password)
         const json = controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)

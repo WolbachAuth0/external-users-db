@@ -65,7 +65,7 @@ class Controller {
   get validator () { return this._validator }
 
   decodeBasicAuth (req, res, next) {
-    console.log('decoding ... ', req.headers.authorization)
+    // console.log('decoding ... ', req.headers.authorization)
     try {
       const encoded = req.headers.authorization.split(' ')[1]
       const decoded = Buffer.from(encoded, 'base64').toString()
@@ -123,7 +123,8 @@ class Controller {
       status: 500,
       statusText: status.text,
       data: {
-        error
+        message: error.message,
+        body: req.body
       }
     }
     return response
