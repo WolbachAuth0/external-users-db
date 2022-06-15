@@ -3,7 +3,7 @@ const Controller = require('./../library/Controller')
 const controller = new Controller('home')
 
 const path = require('path')
-const specification = require('./../openapi-specs')
+const specification = require('./../openapi-docs')
 
 module.exports = router
 
