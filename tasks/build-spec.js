@@ -7,11 +7,9 @@ const yaml = require('json-to-pretty-yaml')
 const fs = require('fs')
 const path = require('path')
 
-const directory = path.join(__dirname, './../openapi-specs')
+const directory = path.join(__dirname, './server/openapi-docs')
 
 buildAPISpec(directory)
-
-
 
 /**
  * Construct the .json and .yaml files which defind the REST API Specification. These files are essential for
