@@ -8,7 +8,7 @@
     "dev": "nodemon startup.js dev",
     "local": "nodemon startup.js local",
     "build-spec": "node ./server/scripts/build-spec.js",
-    "test": "test"
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --coverage"
   },
   "keywords": [
     "auth0",
@@ -39,7 +39,9 @@
   "devDependencies": {
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
+    "jest": "^28.1.1",
     "jsonfile": "^6.1.0",
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.16",
+    "supertest": "^6.2.3"
   }
 }
