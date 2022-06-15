@@ -34,7 +34,7 @@ class UserService {
     try {
       const user = await UserModel.findOne({ email }).exec()
       if (!user) {
-        return { status: 401, data: {} }
+        return { status: 401, data: null }
       }
 
       // compare hashes
