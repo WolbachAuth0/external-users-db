@@ -13,7 +13,19 @@ class User {
       description: 'A User profile document',
       required: [ 'email' ],
       properties: {
-        email: { type: 'string', example: 'abraham.lincoln@gmail.com', description: 'The user\'s email address' }
+        email: { type: 'string', writeOnly: true, example: 'abraham.lincoln@gmail.com', description: 'The user\'s email address' }
+      }
+    }
+  }
+
+  static changePasswordSchema () {
+    return {
+      type: 'object',
+      description: 'A User profile document',
+      required: [ 'email', 'newPassword' ],
+      properties: {
+        email: { type: 'string', writeOnly: true, example: 'abraham.lincoln@gmail.com', description: 'The user\'s email address' },
+        newPassword: { type: 'string', writeOnly: true, example: 'MrPre$ident1861' }
       }
     }
   }

@@ -21,6 +21,14 @@ class UserService {
     return UserModel.jsonSchema()
   }
 
+  static get verifySchema () {
+    return UserModel.verifySchema()
+  }
+
+  static get changePasswordSchema () {
+    return UserModel.changePasswordSchema()
+  }
+
   /**
    * Check user credentials.
    * 
@@ -142,15 +150,15 @@ class UserService {
    * @param {*} id The user's unique identifier
    * @returns {ServiceResponse}
    */
-  static async update (input, id) {
+  static async update (body, id) {
     const found = await UserModel.findById(id)
-    const body = UserModel.parseInput(input)
+    const user = UserModel.parseInput(body)
 
     if (!found) {
       return { status: 404, data: `User with id=${id} was not found.` }
     }
 
-    found.patch(body)
+    found.patch(user)
     const updated = await found.save()
     return { status: 200, data: updated.format() }
   }
