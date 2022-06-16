@@ -4,6 +4,8 @@ const Controller = require('./../library/Controller')
 const Service = require('./../services/users')
 const controller = new Controller('users')
 
+module.exports = router
+
 router.route('/login')
   .get(
     controller.decodeBasicAuth,
@@ -38,7 +40,7 @@ router.route('/signup')
 
 router.route('/verify')
   // .all(verifyJWT)
-  .all(controller.validateRequestBody(Service.jsonSchema))
+  .all(controller.validateRequestBody(Service.verifySchema))
   .put(
     async (req, res) => {
       try {
@@ -54,7 +56,7 @@ router.route('/verify')
 
 router.route('/change-password')
 	// .all(verifyJWT)
-	.all(controller.validateRequestBody(Service.jsonSchema))
+	.all(controller.validateRequestBody(Service.changePasswordSchema))
 	.put(async (req, res) => {
 		try {
 			const { status, data } = await Service.changePassword(req.body.email, req.body.newPassword)
@@ -88,7 +90,7 @@ router.route('/:id')
     // checkJWTScopes(['read:users'], options),
     async (req, res) => {
       try {
-        const { status, data } = await Service.findById(req.params.id, req.query)
+        const { status, data } = await Service.findById(req.params.id)
         const json = controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
@@ -124,5 +126,3 @@ router.route('/:id')
       }
     }
   )
-
-  module.exports = router
