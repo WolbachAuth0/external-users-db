@@ -1,7 +1,7 @@
 const router = require('express').Router()
 
 const Controller = require('./../library/Controller')
-const service = require('./../services/users')
+const Service = require('./../services/users')
 const controller = new Controller('users')
 
 router.route('/login')
@@ -10,7 +10,7 @@ router.route('/login')
     async (req, res) => {
       try {
         // console.log(req.email, req.password)
-        const { status, data } = await service.login(req.email, req.password)
+        const { status, data } = await Service.login(req.email, req.password)
         const json = controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
@@ -22,11 +22,11 @@ router.route('/login')
 
 router.route('/signup')
   // .all(verifyJWT)
-  .all(controller.validateRequestBody(service.jsonSchema))
+  .all(controller.validateRequestBody(Service.jsonSchema))
   .post(
     async (req, res) => {
       try {
-        const { status, data } = await service.signup(req.body.email, req.body.password)
+        const { status, data } = await Service.signup(req.body.email, req.body.password)
         const json = controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
@@ -38,11 +38,11 @@ router.route('/signup')
 
 router.route('/verify')
   // .all(verifyJWT)
-  .all(controller.validateRequestBody(service.jsonSchema))
+  .all(controller.validateRequestBody(Service.jsonSchema))
   .put(
     async (req, res) => {
       try {
-        const { status, data } = await service.verify(req.body.email)
+        const { status, data } = await Service.verify(req.body.email)
         const json = controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
@@ -54,10 +54,10 @@ router.route('/verify')
 
 router.route('/change-password')
 	// .all(verifyJWT)
-	.all(controller.validateRequestBody(service.jsonSchema))
+	.all(controller.validateRequestBody(Service.jsonSchema))
 	.put(async (req, res) => {
 		try {
-			const { status, data } = await service.changePassword(req.body.email, req.body.newPassword)
+			const { status, data } = await Service.changePassword(req.body.email, req.body.newPassword)
 			const json = controller.formatResponse(req, res, { status, data })
 			res.status(status).json(json)
 		} catch (error) {
@@ -72,7 +72,7 @@ router.route('/')
     // checkJWTScopes(['read:users'], options),
     async (req, res) => {
       try {
-        const { status, data } = await service.search(req.query)
+        const { status, data } = await Service.search(req.query)
         const json = controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
@@ -88,7 +88,7 @@ router.route('/:id')
     // checkJWTScopes(['read:users'], options),
     async (req, res) => {
       try {
-        const { status, data } = await service.findById(req.params.id, req.query)
+        const { status, data } = await Service.findById(req.params.id, req.query)
         const json = controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
@@ -99,10 +99,10 @@ router.route('/:id')
   )
   .put(
     // checkJWTScopes(['update:users'], options),
-    // controller.validateRequestBody(service.jsonSchema),
+    // controller.validateRequestBody(Service.jsonSchema),
     async (req, res) => {
       try {
-        const { status, message, data } = await service.update(req.body, req.params.id)
+        const { status, message, data } = await Service.update(req.body, req.params.id)
         const json = controller.formatResponse(req, res, { status, data, message })
         res.status(status).json(json)
       } catch (error) {
@@ -115,7 +115,7 @@ router.route('/:id')
     // checkJWTScopes(['delete:users'], options),
     async (req, res) => {
       try {
-        const { status, data } = await service.remove(req.params.id)
+        const { status, data } = await Service.remove(req.params.id)
         const json = controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
