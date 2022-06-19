@@ -2,6 +2,8 @@ const User = require('./../../library/User')
 
 module.exports = {
   User: User.jsonSchema(),
+  VerifyEmail: User.verifyEmailSchema(),
+  ChangePassword: User.changePasswordSchema(),
   Paginated: {
     type: 'object',
     description: '',
