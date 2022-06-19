@@ -14,10 +14,10 @@ router
         message: 'The requested route is not handled by the server. Please see the API documentation for a listing of handled routes.',
         documentation: '/api/docs'
       }
-      const json = controller.formatResponse(req, res, { status, data })
+      const json = Controller.formatResponse(req, res, { status, data })
       res.status(status).json(json)
     } catch (error) {
-      const json = controller.errorHandler(req, res, error)
+      const json = Controller.errorHandler(req, res, error)
       res.status(json.status).json(json)
     }
   })

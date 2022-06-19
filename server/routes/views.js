@@ -29,7 +29,7 @@ router
       const status = 200
       res.status(status).json(specification)
     } catch (error) {
-      const json = controller.errorHandler(req, res, error)
+      const json = Controller.errorHandler(req, res, error)
       res.status(json.status).json(json)
     }
   })

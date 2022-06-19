@@ -7,16 +7,16 @@ const controller = new Controller('users')
 module.exports = router
 
 router.route('/login')
+  .all(Controller.decodeBasicAuth)  
   .get(
-    controller.decodeBasicAuth,
     async (req, res) => {
       try {
         // console.log(req.email, req.password)
         const { status, data } = await Service.login(req.email, req.password)
-        const json = controller.formatResponse(req, res, { status, data })
+        const json = Controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
-        const json = controller.errorHandler(req, res, error)
+        const json = Controller.errorHandler(req, res, error)
         res.status(401).json(json)
       }
     }
@@ -29,10 +29,10 @@ router.route('/signup')
     async (req, res) => {
       try {
         const { status, data } = await Service.signup(req.body.email, req.body.password)
-        const json = controller.formatResponse(req, res, { status, data })
+        const json = Controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
-        const json = controller.errorHandler(req, res, error)
+        const json = Controller.errorHandler(req, res, error)
         res.status(json.status).json(json)
       }
     }
@@ -40,15 +40,15 @@ router.route('/signup')
 
 router.route('/verify')
   // .all(verifyJWT)
-  .all(controller.validateRequestBody(Service.verifySchema))
+  .all(controller.validateRequestBody(Service.verifyEmailSchema))
   .put(
     async (req, res) => {
       try {
         const { status, data } = await Service.verify(req.body.email)
-        const json = controller.formatResponse(req, res, { status, data })
+        const json = Controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
-        const json = controller.errorHandler(req, res, error)
+        const json = Controller.errorHandler(req, res, error)
         res.status(json.status).json(json)
       }
     }
@@ -60,10 +60,10 @@ router.route('/change-password')
 	.put(async (req, res) => {
 		try {
 			const { status, data } = await Service.changePassword(req.body.email, req.body.newPassword)
-			const json = controller.formatResponse(req, res, { status, data })
+			const json = Controller.formatResponse(req, res, { status, data })
 			res.status(status).json(json)
 		} catch (error) {
-			const json = controller.errorHandler(req, res, error)
+			const json = Controller.errorHandler(req, res, error)
 			res.status(json.status).json(json)
 		}
 	})
@@ -75,10 +75,10 @@ router.route('/')
     async (req, res) => {
       try {
         const { status, data } = await Service.search(req.query)
-        const json = controller.formatResponse(req, res, { status, data })
+        const json = Controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
-        const json = controller.errorHandler(req, res, error)
+        const json = Controller.errorHandler(req, res, error)
         res.status(json.status).json(json)
       }
     }
@@ -91,24 +91,24 @@ router.route('/:id')
     async (req, res) => {
       try {
         const { status, data } = await Service.findById(req.params.id)
-        const json = controller.formatResponse(req, res, { status, data })
+        const json = Controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
-        const json = controller.errorHandler(req, res, error)
+        const json = Controller.errorHandler(req, res, error)
         res.status(json.status).json(json)
       }
     }
   )
   .put(
     // checkJWTScopes(['update:users'], options),
-    // controller.validateRequestBody(Service.jsonSchema),
+    controller.validateRequestBody(Service.jsonSchema),
     async (req, res) => {
       try {
         const { status, message, data } = await Service.update(req.body, req.params.id)
-        const json = controller.formatResponse(req, res, { status, data, message })
+        const json = Controller.formatResponse(req, res, { status, data, message })
         res.status(status).json(json)
       } catch (error) {
-        const json = controller.errorHandler(req, res, error)
+        const json = Controller.errorHandler(req, res, error)
         res.status(json.status).json(json)
       }
     }
@@ -118,10 +118,10 @@ router.route('/:id')
     async (req, res) => {
       try {
         const { status, data } = await Service.remove(req.params.id)
-        const json = controller.formatResponse(req, res, { status, data })
+        const json = Controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
-        const json = controller.errorHandler(req, res, error)
+        const json = Controller.errorHandler(req, res, error)
         res.status(json.status).json(json)
       }
     }
