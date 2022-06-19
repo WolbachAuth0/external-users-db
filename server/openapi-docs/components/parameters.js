@@ -40,6 +40,15 @@ module.exports = {
     schema: { type: 'integer', minimum: 1 },
     example: 2
   },
+  query: {
+    name: 'q',
+    in: 'query',
+    required: false,
+    allowEmptyValue: false,
+    description: 'The query parameters you wish to pass',
+    schema: { type: 'string' },
+    example: 'verified=false'
+  },
   email: {
     name: 'email',
     in: 'query',
