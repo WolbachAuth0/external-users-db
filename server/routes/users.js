@@ -7,8 +7,8 @@ const controller = new Controller('users')
 module.exports = router
 
 router.route('/login')
-  .all(Controller.decodeBasicAuth)  
   .get(
+    Controller.decodeBasicAuth,
     async (req, res) => {
       try {
         // console.log(req.email, req.password)
@@ -24,8 +24,8 @@ router.route('/login')
 
 router.route('/signup')
   // .all(verifyJWT)
-  .all(controller.validateRequestBody(Service.jsonSchema))
   .post(
+    controller.validateRequestBody(Service.jsonSchema),
     async (req, res) => {
       try {
         const { status, data } = await Service.signup(req.body.email, req.body.password)
@@ -40,8 +40,8 @@ router.route('/signup')
 
 router.route('/verify')
   // .all(verifyJWT)
-  .all(controller.validateRequestBody(Service.verifyEmailSchema))
   .put(
+    controller.validateRequestBody(Service.verifyEmailSchema),
     async (req, res) => {
       try {
         const { status, data } = await Service.verify(req.body.email)
@@ -56,19 +56,21 @@ router.route('/verify')
 
 router.route('/change-password')
 	// .all(verifyJWT)
-	.all(controller.validateRequestBody(Service.changePasswordSchema))
-	.put(async (req, res) => {
-		try {
-			const { status, data } = await Service.changePassword(req.body.email, req.body.newPassword)
-			const json = Controller.formatResponse(req, res, { status, data })
-			res.status(status).json(json)
-		} catch (error) {
-			const json = Controller.errorHandler(req, res, error)
-			res.status(json.status).json(json)
-		}
-	})
+	.put(
+    controller.validateRequestBody(Service.changePasswordSchema),
+    async (req, res) => {
+      try {
+        const { status, data } = await Service.changePassword(req.body.email, req.body.newPassword)
+        const json = Controller.formatResponse(req, res, { status, data })
+        res.status(status).json(json)
+      } catch (error) {
+        const json = Controller.errorHandler(req, res, error)
+        res.status(json.status).json(json)
+      }
+    }
+  )
 
-router.route('/')
+router.route('/search')
   // .all(verifyJWT)
   .get(
     // checkJWTScopes(['read:users'], options),
