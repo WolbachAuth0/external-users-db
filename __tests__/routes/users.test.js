@@ -42,8 +42,8 @@ describe('User routes', () => {
 
   beforeAll(() => {
     // mock Controller methods before loading users router
-    controllerSpy.validateRequestBody = jest.fn(function (req, res, next) { next() })
-    controllerSpy.decodeBasicAuth = jest.spyOn(Controller.prototype, 'decodeBasicAuth')
+    controllerSpy.validateRequestBody = jest.fn((req, res, next) => { next() })
+    controllerSpy.decodeBasicAuth = jest.spyOn(Controller, 'decodeBasicAuth')
 
     jest.spyOn(Controller.prototype, 'validateRequestBody')
       .mockImplementation(schema => controllerSpy.validateRequestBody)
@@ -54,47 +54,89 @@ describe('User routes', () => {
 
   describe('GET /login', () => {
     const resolved = { status: 200, data: sampleUser }
-    const loginSpy = jest.spyOn(Service, 'login')
+    let loginSpy = jest.spyOn(Service, 'login')
       .mockImplementation(() => Promise.resolve(resolved))
     
     const url = `${baseURL}/login`
     const auth = { email: 'aaron.wolbach@okta.com', password: 'Auth0Dem0!' }
     let response
-    beforeAll(async () => {
-      response = await request(app)
-        .get(url)
-        .auth(auth.email, auth.password)
-        .set('Accept', 'application/json')
+    
+    describe('happy path ...', () => {
+      beforeAll(async () => {
+        response = await request(app)
+          .get(url)
+          .auth(auth.email, auth.password)
+          .set('Accept', 'application/json')
+      })
+      afterAll(() => {
+        jest.clearAllMocks()
+        loginSpy.mockReset()
+      })
+  
+      it('should call the controller\'s decodeBasicAuth method', () => {
+        expect(controllerSpy.decodeBasicAuth).toHaveBeenCalled()
+      })
+      it('responds with status code 200', () => {
+        expect(response.statusCode).toBe(resolved.status)
+      })
+      it('response header content-type is application/json', () => {
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8')
+      })
+      it('responds with properly formatted data', () => {
+        const body = JSON.parse(response.text)
+        const expectedResponse = {
+          success: true,
+          data: expect.objectContaining(resolved.data)
+        }
+        expect(response.text).toBeDefined()
+        expect(body).toBeDefined()
+        expect(body).toMatchObject(expectedResponse)
+      })
+      it('should call the user service\'s static login method', () => {
+        expect(loginSpy).toHaveBeenCalled()
+      })
+      it('passes email and password to the user service\'s login method', () => {
+        expect(loginSpy).toHaveBeenCalledWith(auth.email, auth.password)
+      })
     })
-    afterAll(() => {
-      jest.clearAllMocks()
-      loginSpy.mockReset()
+    
+    describe('if the user service\'s login method throws an error ...', () => {
+      beforeAll(async () => {
+        loginSpy = jest.spyOn(Service, 'login')
+          .mockImplementation(() => { throw new Error('test error') })
+
+        response = await request(app)
+          .get(url)
+          .auth(auth.email, auth.password)
+          .set('Accept', 'application/json')
+      })
+      afterAll(() => {
+        loginSpy = jest.spyOn(Service, 'login')
+          .mockImplementation(() => Promise.resolve(resolved))
+        jest.clearAllMocks()
+        loginSpy.mockReset()
+      })
+
+      it('should return a 401 error', () => {
+        expect(response.statusCode).toBe(401)
+      })
     })
 
-    it('should call the controller\'s decodeBasicAuth method', () => {
-      expect(controllerSpy.decodeBasicAuth).toHaveBeenCalled
-    })
-    it('responds with status code 200', () => {
-      expect(response.statusCode).toBe(resolved.status)
-    })
-    it('response header content-type is application/json', () => {
-      expect(response.header['content-type']).toBe('application/json; charset=utf-8')
-    })
-    it('responds with properly formatted data', () => {
-      const body = JSON.parse(response.text)
-      const expectedResponse = {
-        success: true,
-        data: expect.objectContaining(resolved.data)
-      }
-      expect(response.text).toBeDefined()
-      expect(body).toBeDefined()
-      expect(body).toMatchObject(expectedResponse)
-    })
-    it('should call the user service\'s static login method', () => {
-      expect(loginSpy).toHaveBeenCalled()
-    })
-    it('passes email and password to the user service\'s login method', () => {
-      expect(loginSpy).toHaveBeenCalledWith(auth.email, auth.password)
+    describe('if no authorization header was sent with the request ...', () => {
+      beforeAll(async () => {
+        response = await request(app)
+          .get(url)
+          .set('Accept', 'application/json')
+        console.log(response.text)
+      })
+      afterAll(() => {
+        jest.clearAllMocks()
+        loginSpy.mockReset()
+      })
+
+      it('should return a 400 error', () => {
+        expect(response.statusCode).toBe(400)
+      })
     })
   })
 
@@ -121,7 +163,7 @@ describe('User routes', () => {
       signupSpy.mockReset()
     })
 
-    it('should validate the request body', () => {
+    it('should call the controller\'s validateRequestBody method', () => {
       expect(controllerSpy.validateRequestBody).toHaveBeenCalled()
     })
     it('responds with status code 201', () => {
@@ -168,7 +210,7 @@ describe('User routes', () => {
       verifySpy.mockReset()
     })
 
-    it('should validate the request body', () => {
+    it('should call the controller\'s validateRequestBody method', () => {
       expect(controllerSpy.validateRequestBody).toHaveBeenCalled()
     })
     it('responds with status code 200', () => {
@@ -218,6 +260,9 @@ describe('User routes', () => {
       changePasswordSpy.mockReset()
     })
 
+    it('should call the controller\'s validateRequestBody method', () => {
+      expect(controllerSpy.validateRequestBody).toHaveBeenCalled()
+    })
     it('should validate the request body', () => {
       expect(controllerSpy.validateRequestBody).toHaveBeenCalled()
     })
@@ -250,7 +295,10 @@ describe('User routes', () => {
     const searchSpy = jest.spyOn(Service, 'search')
       .mockImplementation(() => Promise.resolve(resolved))
     
-    const url = `${baseURL}/`
+    const query = {
+      email: '\"okta.com\"'
+    }
+    let url = `${baseURL}?email="okta.com"`
     let response
     beforeAll(async () => {
       response = await request(app)
@@ -281,7 +329,9 @@ describe('User routes', () => {
     it('should call the user service\'s static search method', () => {
       expect(searchSpy).toHaveBeenCalled()
     })
-    it.todo('passes the query parameters to the search method')
+    it('passes the query parameters to the search method', () => {
+      expect(searchSpy).toHaveBeenCalledWith(query)
+    })
   })
 
   describe('GET /:id', () => {
@@ -352,6 +402,9 @@ describe('User routes', () => {
       updateSpy.mockReset()
     })
 
+    it('should call the controller\'s validateRequestBody method', () => {
+      expect(controllerSpy.validateRequestBody).toHaveBeenCalled()
+    })
     it('responds with status code 200', () => {
       expect(response.statusCode).toBe(resolved.status)
     })
@@ -368,10 +421,10 @@ describe('User routes', () => {
       expect(body).toBeDefined()
       expect(body).toMatchObject(expectedResponse)
     })
-    it('should call the user service\'s static findById method', () => {
+    it('should call the user service\'s static update method', () => {
       expect(updateSpy).toHaveBeenCalled()
     })
-    it('should pass the id parameter to the user service\'s findById method', () => {
+    it('should pass the id parameter to the user service\'s update method', () => {
       expect(updateSpy).toHaveBeenCalledWith(requestBody, sampleUser.id)
     })
   })
