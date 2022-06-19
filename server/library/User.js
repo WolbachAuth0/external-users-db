@@ -7,7 +7,7 @@ class User {
 
   // setters
 
-  static verifySchema () {
+  static verifyEmailSchema () {
     return {
       type: 'object',
       description: 'A User profile document',
