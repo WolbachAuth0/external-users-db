@@ -6,7 +6,7 @@ module.exports = {
       // tags: [ 'Custom DB Action' ],
       summary: 'Login User',
       description: `Attempts to log a user in. User credentials are extracted from the 
-      Basic Auth Scheme. The basusername (email) and password.`,
+      Basic Auth Scheme. The base username (email) and password.`,
       security: [
         { Basic_Auth: [ 'username', 'password' ] }
       ],

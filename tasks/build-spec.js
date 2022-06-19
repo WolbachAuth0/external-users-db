@@ -7,7 +7,7 @@ const yaml = require('json-to-pretty-yaml')
 const fs = require('fs')
 const path = require('path')
 
-const directory = path.join(__dirname, './server/openapi-docs')
+const directory = path.join(__dirname, './../server/openapi-docs')
 
 buildAPISpec(directory)
 

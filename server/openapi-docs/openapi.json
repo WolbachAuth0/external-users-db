@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Okta | Auth0 Custom DB Example API",
-    "description": "# Introduction\n\nA key feature of Auth0 is to permit the Auth0 authorization server to proxy logins to external sources of users. This project is intended as an example of a custom DB connection into an Auth0. This page documents the RESTful API endpoints for that custom DB connection.\n\n# OpenAPI Specification\n\nThis API is documented in **OpenAPI format**. \n\n# Cross-Origin Resource Sharing\n\n\n# Authentication\n\n",
+    "description": "# Introduction\n\nA key feature of Auth0 is to permit the Auth0 authorization server to proxy logins to external sources of users. This project is intended as an example of a custom DB connection into an Auth0. This page documents the RESTful API endpoints for that custom DB connection.\n\n## Source Code\n\nThis project is intended for use only as an example of how to connect Auth0 to an externally managed custom database. The <a href=\"https://github.com/WolbachAuth0/external-users-db\">source code</a> is available for Okta employees. It is not intended to represent production ready code.\n\n# Authentication\n\nThis API makes use of two types of authentication. The Basic Auth authentication scheme is used ONLY for the Login User endpoint. For all other endpoints, a bearer token (as a JWT) is appended in the authorization header.",
     "termsOfService": "undefined/terms",
     "contact": {
       "name": "Aaron Wolbach",
@@ -13,9 +13,9 @@
       "name": "UNLICENSED",
       "url": "https://choosealicense.com/licenses/"
     },
-    "version": "1.0.1",
+    "version": "1.0",
     "x-logo": {
-      "url": "/public/images/okta-auth0-logo.svg",
+      "url": "/public/okta-auth0-logo.svg",
       "altText": "Okta | Auth0"
     }
   },
@@ -28,76 +28,14 @@
   "paths": {
     "/api/v1/users/login": {
       "get": {
-        "summary": "Log a user in",
-        "description": "",
-        "security": {
-          "basicAuth": []
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "method": {
-                      "type": "string",
-                      "description": "The HTTP method used in the request."
-                    },
-                    "controller": {
-                      "type": "string",
-                      "description": "The name of the controller which responded to the request."
-                    },
-                    "resource": {
-                      "type": "string",
-                      "description": "The URL of the requested resource."
-                    },
-                    "success": {
-                      "type": "boolean",
-                      "description": "Was the request successful?"
-                    },
-                    "status": {
-                      "type": "integer",
-                      "description": "The HTTP status code"
-                    },
-                    "statusText": {
-                      "type": "string",
-                      "description": "A description of the http status code."
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/Paginated"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
-        }
-      }
-    },
-    "/api/v1/users": {
-      "get": {
-        "summary": "Search Users by query",
-        "description": "Find a list users which match the query parameters passed in the url",
-        "parameters": [
+        "summary": "Login User",
+        "description": "Attempts to log a user in. User credentials are extracted from the \n      Basic Auth Scheme. The base username (email) and password.",
+        "security": [
           {
-            "$ref": "#/components/parameters/populate"
-          },
-          {
-            "$ref": "#/components/parameters/limit"
-          },
-          {
-            "$ref": "#/components/parameters/page"
+            "Basic_Auth": [
+              "username",
+              "password"
+            ]
           }
         ],
         "responses": {
@@ -111,74 +49,6 @@
                     "method": {
                       "type": "string",
                       "description": "The HTTP method used in the request."
-                    },
-                    "controller": {
-                      "type": "string",
-                      "description": "The name of the controller which responded to the request."
-                    },
-                    "resource": {
-                      "type": "string",
-                      "description": "The URL of the requested resource."
-                    },
-                    "success": {
-                      "type": "boolean",
-                      "description": "Was the request successful?"
-                    },
-                    "status": {
-                      "type": "integer",
-                      "description": "The HTTP status code"
-                    },
-                    "statusText": {
-                      "type": "string",
-                      "description": "A description of the http status code."
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/Paginated"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
-        }
-      }
-    },
-    "/api/v1/users/{id}": {
-      "get": {
-        "summary": "Find User by ID",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/id"
-          },
-          {
-            "$ref": "#/components/parameters/populate"
-          }
-        ],
-        "description": "Finds a User document that has the passed id.",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "method": {
-                      "type": "string",
-                      "description": "The HTTP method used in the request."
-                    },
-                    "controller": {
-                      "type": "string",
-                      "description": "The name of the controller which responded to the request."
                     },
                     "resource": {
                       "type": "string",
@@ -204,36 +74,35 @@
               }
             }
           },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
           "401": {
             "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
           }
         }
-      },
-      "put": {
-        "summary": "Update User",
-        "parameters": [
+      }
+    },
+    "/api/v1/users/search": {
+      "get": {
+        "summary": "Search Users",
+        "description": "Find a list users which match the query parameters passed in the url",
+        "security": [
           {
-            "$ref": "#/components/parameters/id"
+            "Access_Token": []
           }
         ],
-        "requestBody": {
-          "description": "Updated author data",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/email"
+          },
+          {
+            "$ref": "#/components/parameters/populate"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/page"
           }
-        },
-        "description": "Describe the columns of the table with the passed table name.",
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -246,9 +115,130 @@
                       "type": "string",
                       "description": "The HTTP method used in the request."
                     },
-                    "controller": {
+                    "resource": {
                       "type": "string",
-                      "description": "The name of the controller which responded to the request."
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Paginated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Find User by ID",
+        "description": "Finds a User document that has the passed id.",
+        "security": [
+          {
+            "Access_Token": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
+                    },
+                    "resource": {
+                      "type": "string",
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Update User",
+        "description": "Describe the columns of the table with the passed table name.",
+        "security": [
+          {
+            "Access_Token": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UpdateUser"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
                     },
                     "resource": {
                       "type": "string",
@@ -287,12 +277,17 @@
       },
       "delete": {
         "summary": "Delete User",
+        "description": "Removes the single quote associated to the passed id from the database.",
+        "security": [
+          {
+            "Access_Token": []
+          }
+        ],
         "parameters": [
           {
             "$ref": "#/components/parameters/id"
           }
         ],
-        "description": "Removes the single quote associated to the passed id from the database.",
         "responses": {
           "200": {
             "description": "OK",
@@ -304,10 +299,6 @@
                     "method": {
                       "type": "string",
                       "description": "The HTTP method used in the request."
-                    },
-                    "controller": {
-                      "type": "string",
-                      "description": "The name of the controller which responded to the request."
                     },
                     "resource": {
                       "type": "string",
@@ -342,20 +333,17 @@
         }
       }
     },
-    "/api/v1/users/signup": {
-      "post": {
-        "summary": "Create User",
-        "description": "Find a list users which match the query parameters passed in the url",
-        "requestBody": {
-          "description": "User to add to the system",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
+    "/api/v1/users/verify": {
+      "put": {
+        "summary": "Verify Email",
+        "description": "Verifies a user's email address.",
+        "security": [
+          {
+            "Access_Token": []
           }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/VerifyEmail"
         },
         "responses": {
           "200": {
@@ -368,10 +356,6 @@
                     "method": {
                       "type": "string",
                       "description": "The HTTP method used in the request."
-                    },
-                    "controller": {
-                      "type": "string",
-                      "description": "The name of the controller which responded to the request."
                     },
                     "resource": {
                       "type": "string",
@@ -405,6 +389,123 @@
           },
           "404": {
             "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/api/v1/users/change-password": {
+      "put": {
+        "summary": "Change Password",
+        "description": "Changes the password of the user associated to the email address in the request body.",
+        "security": [
+          {
+            "Access_Token": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ChangePassword"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
+                    },
+                    "resource": {
+                      "type": "string",
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/api/v1/users/signup": {
+      "post": {
+        "summary": "Sign Up User",
+        "description": "Signs up a new user with the email and password provided in the request body.",
+        "security": [
+          {
+            "Access_Token": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/SignupUser"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "description": "The HTTP method used in the request."
+                    },
+                    "resource": {
+                      "type": "string",
+                      "description": "The URL of the requested resource."
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Was the request successful?"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "The HTTP status code"
+                    },
+                    "statusText": {
+                      "type": "string",
+                      "description": "A description of the http status code."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
           }
         }
       }
@@ -453,6 +554,42 @@
             "type": "string",
             "readOnly": true,
             "description": "The data and time that this document was last updated."
+          }
+        }
+      },
+      "VerifyEmail": {
+        "type": "object",
+        "description": "A User profile document",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "writeOnly": true,
+            "example": "abraham.lincoln@gmail.com",
+            "description": "The user's email address"
+          }
+        }
+      },
+      "ChangePassword": {
+        "type": "object",
+        "description": "A User profile document",
+        "required": [
+          "email",
+          "newPassword"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "writeOnly": true,
+            "example": "abraham.lincoln@gmail.com",
+            "description": "The user's email address"
+          },
+          "newPassword": {
+            "type": "string",
+            "writeOnly": true,
+            "example": "MrPre$ident1861"
           }
         }
       },
@@ -568,31 +705,49 @@
           "minimum": 1
         },
         "example": 2
+      },
+      "query": {
+        "name": "q",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": false,
+        "description": "The query parameters you wish to pass",
+        "schema": {
+          "type": "string"
+        },
+        "example": "verified=false"
+      },
+      "email": {
+        "name": "email",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": true,
+        "description": "The email address to search for.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "abraham.lincoln@potus.com"
       }
     },
-    "securitySchemes": [
-      {
-        "basicAuth": {
-          "type": "https",
-          "scheme": "basic",
-          "in": "header",
-          "name": "Authorization",
-          "description": "Provide username and password base 64 encoded in the Authorization header."
-        }
+    "securitySchemes": {
+      "Basic_Auth": {
+        "type": "https",
+        "scheme": "basic",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Provide username and password base 64 encoded in the Authorization header."
       },
-      {
-        "bearerToken": {
-          "type": "https",
-          "scheme": "bearer",
-          "bearerFormat": "JWT",
-          "in": "header",
-          "name": "Authorization",
-          "description": "Provide an access token in a JWT format. Access token should be generated an properly signed by the authoriztion server."
-        }
+      "Access_Token": {
+        "type": "https",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Provide an access token in a JWT format. Access token should be generated an properly signed by the authoriztion server."
       }
-    ],
+    },
     "requestBodies": {
-      "loginUser": {
+      "LoginUser": {
         "description": "Updated quote data",
         "required": true,
         "content": {
@@ -603,8 +758,41 @@
           }
         }
       },
-      "getUser": {
-        "description": "Get a user ",
+      "ChangePassword": {
+        "description": "Change Password",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ChangePassword"
+            }
+          }
+        }
+      },
+      "SignupUser": {
+        "description": "Sign up a new user ",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "VerifyEmail": {
+        "description": "Verify a user's email address",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/VerifyEmail"
+            }
+          }
+        }
+      },
+      "UpdateUser": {
+        "description": "Update User Profile",
         "required": true,
         "content": {
           "application/json": {
@@ -626,10 +814,6 @@
                 "method": {
                   "type": "string",
                   "description": "The HTTP method used in the request."
-                },
-                "controller": {
-                  "type": "string",
-                  "description": "The name of the controller which responded to the request."
                 },
                 "resource": {
                   "type": "string",
@@ -667,10 +851,6 @@
                   "type": "string",
                   "description": "The HTTP method used in the request."
                 },
-                "controller": {
-                  "type": "string",
-                  "description": "The name of the controller which responded to the request."
-                },
                 "resource": {
                   "type": "string",
                   "description": "The URL of the requested resource."
@@ -706,10 +886,6 @@
                 "method": {
                   "type": "string",
                   "description": "The HTTP method used in the request."
-                },
-                "controller": {
-                  "type": "string",
-                  "description": "The name of the controller which responded to the request."
                 },
                 "resource": {
                   "type": "string",
@@ -747,10 +923,6 @@
                   "type": "string",
                   "description": "The HTTP method used in the request."
                 },
-                "controller": {
-                  "type": "string",
-                  "description": "The name of the controller which responded to the request."
-                },
                 "resource": {
                   "type": "string",
                   "description": "The URL of the requested resource."
@@ -786,10 +958,6 @@
                 "method": {
                   "type": "string",
                   "description": "The HTTP method used in the request."
-                },
-                "controller": {
-                  "type": "string",
-                  "description": "The name of the controller which responded to the request."
                 },
                 "resource": {
                   "type": "string",
@@ -827,10 +995,6 @@
                   "type": "string",
                   "description": "The HTTP method used in the request."
                 },
-                "controller": {
-                  "type": "string",
-                  "description": "The name of the controller which responded to the request."
-                },
                 "resource": {
                   "type": "string",
                   "description": "The URL of the requested resource."
@@ -866,10 +1030,6 @@
                 "method": {
                   "type": "string",
                   "description": "The HTTP method used in the request."
-                },
-                "controller": {
-                  "type": "string",
-                  "description": "The name of the controller which responded to the request."
                 },
                 "resource": {
                   "type": "string",
@@ -907,10 +1067,6 @@
                   "type": "string",
                   "description": "The HTTP method used in the request."
                 },
-                "controller": {
-                  "type": "string",
-                  "description": "The name of the controller which responded to the request."
-                },
                 "resource": {
                   "type": "string",
                   "description": "The URL of the requested resource."
@@ -946,10 +1102,6 @@
                 "method": {
                   "type": "string",
                   "description": "The HTTP method used in the request."
-                },
-                "controller": {
-                  "type": "string",
-                  "description": "The name of the controller which responded to the request."
                 },
                 "resource": {
                   "type": "string",
