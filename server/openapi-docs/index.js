@@ -32,12 +32,14 @@ const specification = {
       description: `Production server`
     }
   ],
-  paths: require('./paths'),
+  paths: Object.assign(
+    require('./paths/users')
+  ),
   components: {
     schemas: require('./components/schemas'),
     parameters: require('./components/parameters'),
     securitySchemes: require('./components/security').schemes,
-    requestBodies: require('./components/requests'),
+    requestBodies: require('./components/requestBodies'),
     responses: require('./components/responses'),
     // headers: {},
     // examples: {}
