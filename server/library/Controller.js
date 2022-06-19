@@ -64,18 +64,20 @@ class Controller {
   get name () { return this._name }
   get validator () { return this._validator }
 
-  decodeBasicAuth (req, res, next) {
-    // console.log('decoding ... ', req.headers.authorization)
+  static decodeBasicAuth (req, res, next) {
     try {
+      if (!req.headers.authorization) {
+        throw new Error('No Authorization Header' )
+      }
+    
       const encoded = req.headers.authorization.split(' ')[1]
       const decoded = Buffer.from(encoded, 'base64').toString()
       req.email = decoded.split(':')[0]
       req.password = decoded.split(':')[1]
       next()
     } catch (error) {
-      const status = 401
-      const data = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)))
-      const json = this.formatResponse(req, res, { status, data })
+      const status = 400
+      const json = Controller.formatResponse(req, res, { status, data: {} })
       res.status(status).json(json)
     }
   }
@@ -90,12 +92,11 @@ class Controller {
    * @param {Number} param.status The HTTP status code
    * @param {Object} param.data The response data
    */
-  formatResponse (req, res, { status, data }) {
+  static formatResponse (req, res, { status, data }) {
     status = Controller.httpCodes.hasOwnProperty(status) ? status : 500
     const stat = Controller.httpCodes[status]
     const response = {
       method: req.method.toUpperCase(),
-      controler: this.name,
       resource: req.baseUrl || '/',
       success: stat.success,
       status,
@@ -113,21 +114,14 @@ class Controller {
    * @param {Error} error The error that was thrown.
    * @returns 
    */
-  errorHandler (req, res, error) {
+  static errorHandler (req, res, error) {
     // TODO: set different status codes based on the error message
-    const status = Controller.httpCodes[500]
-    const response = {
-      method: req.method.toUpperCase(),
-      resource: req.baseUrl,
-      success: status.success,
-      status: 500,
-      statusText: status.text,
-      data: {
-        message: error.message,
-        body: req.body
-      }
+    const status = 500
+    const data = {
+      message: error.message,
+      body: req.body
     }
-    return response
+    return this.formatResponse(req, res, { status, data })
   }
 
   /**

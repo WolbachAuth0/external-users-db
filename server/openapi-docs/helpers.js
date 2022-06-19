@@ -12,7 +12,6 @@
         type: 'object',
         properties: {
           method: { type: 'string', description: 'The HTTP method used in the request.' },
-          controller: { type: 'string', description: 'The name of the controller which responded to the request.' },
           resource: { type: 'string', description: 'The URL of the requested resource.' },
           success: { type: 'boolean', description: 'Was the request successful?' },
           status: { type: 'integer', description: 'The HTTP status code' },
