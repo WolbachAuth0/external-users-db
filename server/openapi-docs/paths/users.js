@@ -1,6 +1,4 @@
 const { content } = require('./../helpers')
-const requestBodies = require('./../components/requestBodies')
-const parameters = require('./../components/parameters')
 
 module.exports = {
   '/api/v1/users/login': {
