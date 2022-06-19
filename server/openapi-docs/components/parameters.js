@@ -40,4 +40,13 @@ module.exports = {
     schema: { type: 'integer', minimum: 1 },
     example: 2
   },
+  email: {
+    name: 'email',
+    in: 'query',
+    required: false,
+    allowEmptyValue: true,
+    description: 'The email address to search for.',
+    schema: { type: 'string' },
+    example: 'abraham.lincoln@potus.com'
+  }
 }
