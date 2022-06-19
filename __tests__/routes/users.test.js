@@ -290,7 +290,7 @@ describe('User routes', () => {
     })
   })
 
-  describe('GET /', () => {
+  describe('GET /search', () => {
     const resolved = { status: 200, data: samplePaginate }
     const searchSpy = jest.spyOn(Service, 'search')
       .mockImplementation(() => Promise.resolve(resolved))
@@ -298,7 +298,7 @@ describe('User routes', () => {
     const query = {
       email: '\"okta.com\"'
     }
-    let url = `${baseURL}?email="okta.com"`
+    let url = `${baseURL}/search?email="okta.com"`
     let response
     beforeAll(async () => {
       response = await request(app)
