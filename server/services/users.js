@@ -21,6 +21,10 @@ class UserService {
     return UserModel.jsonSchema()
   }
 
+  static get loginSchema () {
+    return UserModel.loginSchema()
+  }
+
   static get verifyEmailSchema () {
     return UserModel.verifyEmailSchema()
   }

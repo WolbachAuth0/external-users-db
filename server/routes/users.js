@@ -9,7 +9,7 @@ module.exports = router
 router.route('/login')
 // .all(verifyJWT)  
 .post(
-    controller.validateRequestBody(Service.jsonSchema),
+    controller.validateRequestBody(Service.loginSchema),
     async (req, res) => {
       try {
         // console.log(req.email, req.password)

@@ -7,6 +7,18 @@ class User {
 
   // setters
 
+  static loginSchema () {
+    return {
+      type: 'object',
+      description: 'A User profile document',
+      required: [ 'email', 'password' ],
+      properties: {
+        email: { type: 'string', writeOnly: true, example: 'abraham.lincoln@gmail.com', description: 'The user\'s email address' },
+        password: { type: 'string', writeOnly: true, example: 'MrPre$ident1861', description: 'The user\'s password.' }
+      }
+    }
+  }
+
   static verifyEmailSchema () {
     return {
       type: 'object',
