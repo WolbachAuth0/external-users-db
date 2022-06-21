@@ -1,22 +1,6 @@
 const { content } = require('./../helpers')
 
 module.exports = {
-  '/api/v1/users/login': {
-    get: {
-      // tags: [ 'Custom DB Action' ],
-      summary: 'Login User',
-      description: `Attempts to log a user in. User credentials are extracted from the 
-      Basic Auth Scheme. The base username (email) and password.`,
-      security: [
-        { Basic_Auth: [ 'username', 'password' ] }
-      ],
-      responses: {
-        '200': { description: 'OK', content: content({ '$ref': '#/components/schemas/User' }) },
-        '401': { '$ref': '#/components/responses/401' },
-      },
-      // 'x-code-samples': sample.get('/catalog')
-    }
-  },
   '/api/v1/users/search': {
     get: {
       // tags: [ 'Custom DB Action' ],
@@ -34,6 +18,76 @@ module.exports = {
       responses: {
         '200': { description: 'OK', content: content({ '$ref': '#/components/schemas/Paginated' }) },
         '400': { '$ref': '#/components/responses/400' },
+        '401': { '$ref': '#/components/responses/401' }, // unauthorized
+      },
+      // 'x-code-samples': sample.get('/catalog')
+    }
+  },
+  '/api/v1/users/verify': {
+    put: {
+      // tags: [ 'Custom DB Action' ],
+      summary: 'Verify Email',
+      description: `Verifies a user's email address.`,
+      security: [
+        { Access_Token: [] }
+      ],
+      requestBody: { '$ref': '#/components/requestBodies/VerifyEmail' },
+      responses: {
+        '200': { description: 'OK', content: content({ '$ref': '#/components/schemas/User' }) },
+        '400': { '$ref': '#/components/responses/400' }, // bad request
+        '401': { '$ref': '#/components/responses/401' }, // unauthorized
+        '404': { '$ref': '#/components/responses/404' }, // not found
+      },
+      // 'x-code-samples': sample.get('/catalog')
+    }
+  },
+  '/api/v1/users/change-password': {
+    put: {
+      // tags: [ 'Custom DB Action' ],
+      summary: 'Change Password',
+      description: `Changes the password of the user associated to the email address in the request body.`,
+      security: [
+        { Access_Token: [] }
+      ],
+      requestBody: { '$ref': '#/components/requestBodies/ChangePassword' },
+      responses: {
+        '200': { description: 'OK', content: content({ '$ref': '#/components/schemas/User' }) },
+        '400': { '$ref': '#/components/responses/400' }, // bad request
+        '401': { '$ref': '#/components/responses/401' }, // unauthorized
+        '404': { '$ref': '#/components/responses/404' }, // not found
+      },
+      // 'x-code-samples': sample.get('/catalog')
+    }
+  },
+  '/api/v1/users/login': {
+    post: {
+      // tags: [ 'Custom DB Action' ],
+      summary: 'Login User',
+      description: `Attempts to log a user in. User\'s email and password credentials are extracted from the 
+      request body.`,
+      security: [
+        { Access_Token: [] }
+      ],
+      requestBody: { '$ref': '#/components/requestBodies/LoginUser' },
+      responses: {
+        '200': { description: 'OK', content: content({ '$ref': '#/components/schemas/User' }) },
+        '401': { '$ref': '#/components/responses/401' },
+      },
+      // 'x-code-samples': sample.get('/catalog')
+    }
+  },
+  '/api/v1/users/signup': {
+    post: {
+      // tags: [ 'Custom DB Action' ],
+      summary: 'Sign Up User',
+      description: `Signs up a new user with the email and password provided in the request body.`,
+      security: [
+        { Access_Token: [] }
+      ],
+      requestBody: { '$ref': '#/components/requestBodies/SignupUser' },
+      responses: {
+        '200': { description: 'OK', content: content({ '$ref': '#/components/schemas/User' }) },
+        '400': { '$ref': '#/components/responses/400' }, // bad request
         '401': { '$ref': '#/components/responses/401' }, // unauthorized
       },
       // 'x-code-samples': sample.get('/catalog')
@@ -95,58 +149,5 @@ module.exports = {
       },
       // 'x-code-samples': sample.get('/catalog/prod')
     },
-  },
-  '/api/v1/users/verify': {
-    put: {
-      // tags: [ 'Custom DB Action' ],
-      summary: 'Verify Email',
-      description: `Verifies a user's email address.`,
-      security: [
-        { Access_Token: [] }
-      ],
-      requestBody: { '$ref': '#/components/requestBodies/VerifyEmail' },
-      responses: {
-        '200': { description: 'OK', content: content({ '$ref': '#/components/schemas/User' }) },
-        '400': { '$ref': '#/components/responses/400' }, // bad request
-        '401': { '$ref': '#/components/responses/401' }, // unauthorized
-        '404': { '$ref': '#/components/responses/404' }, // not found
-      },
-      // 'x-code-samples': sample.get('/catalog')
-    }
-  },
-  '/api/v1/users/change-password': {
-    put: {
-      // tags: [ 'Custom DB Action' ],
-      summary: 'Change Password',
-      description: `Changes the password of the user associated to the email address in the request body.`,
-      security: [
-        { Access_Token: [] }
-      ],
-      requestBody: { '$ref': '#/components/requestBodies/ChangePassword' },
-      responses: {
-        '200': { description: 'OK', content: content({ '$ref': '#/components/schemas/User' }) },
-        '400': { '$ref': '#/components/responses/400' }, // bad request
-        '401': { '$ref': '#/components/responses/401' }, // unauthorized
-        '404': { '$ref': '#/components/responses/404' }, // not found
-      },
-      // 'x-code-samples': sample.get('/catalog')
-    }
-  },
-  '/api/v1/users/signup': {
-    post: {
-      // tags: [ 'Custom DB Action' ],
-      summary: 'Sign Up User',
-      description: `Signs up a new user with the email and password provided in the request body.`,
-      security: [
-        { Access_Token: [] }
-      ],
-      requestBody: { '$ref': '#/components/requestBodies/SignupUser' },
-      responses: {
-        '200': { description: 'OK', content: content({ '$ref': '#/components/schemas/User' }) },
-        '400': { '$ref': '#/components/responses/400' }, // bad request
-        '401': { '$ref': '#/components/responses/401' }, // unauthorized
-      },
-      // 'x-code-samples': sample.get('/catalog')
-    }
   },
 }

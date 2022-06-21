@@ -4,7 +4,7 @@ module.exports = {
     required: true,
     content: {
       'application/json': {
-        schema: { $ref: '#/components/schemas/User' },       
+        schema: { $ref: '#/components/schemas/LoginUser' },       
       },
     },
   },
