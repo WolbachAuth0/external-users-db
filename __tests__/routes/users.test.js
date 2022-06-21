@@ -1,5 +1,6 @@
 const request = require('supertest')
 const express = require('express')
+const getToken = require('./../../auth0-db-actions/getToken')
 
 // import modules
 const Service = require('./../../server/services/users')
@@ -39,8 +40,8 @@ describe('User routes', () => {
     validateRequestBody: jest.fn(),
     decodeBasicAuth: jest.fn()
   }
-
-  beforeAll(() => {
+  
+  beforeAll(async () => {
     // mock Controller methods before loading users router
     controllerSpy.validateRequestBody = jest.fn((req, res, next) => { next() })
     controllerSpy.decodeBasicAuth = jest.spyOn(Controller, 'decodeBasicAuth')
@@ -50,6 +51,8 @@ describe('User routes', () => {
 
     const users = require('./../../server/routes/users')
     app.use(baseURL, users)
+    var { access_token } = await getToken()
+    // console.log(access_token)
   })
 
   describe('GET /login', () => {
@@ -64,8 +67,10 @@ describe('User routes', () => {
     describe('happy path ...', () => {
       beforeAll(async () => {
         response = await request(app)
-          .get(url)
-          .auth(auth.email, auth.password)
+          .post(url)
+          .send(auth)
+          .set('Authorization', `Bearer ${access_token}`)
+          .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
       })
       afterAll(() => {
@@ -73,8 +78,8 @@ describe('User routes', () => {
         loginSpy.mockReset()
       })
   
-      it('should call the controller\'s decodeBasicAuth method', () => {
-        expect(controllerSpy.decodeBasicAuth).toHaveBeenCalled()
+      it('should call the controller\'s validateRequestBody method', () => {
+        expect(controllerSpy.validateRequestBody).toHaveBeenCalled()
       })
       it('responds with status code 200', () => {
         expect(response.statusCode).toBe(resolved.status)
@@ -106,15 +111,16 @@ describe('User routes', () => {
           .mockImplementation(() => { throw new Error('test error') })
 
         response = await request(app)
-          .get(url)
-          .auth(auth.email, auth.password)
+          .post(url)
+          .send(auth)
+          .set('Authorization', `Bearer ${access_token}`)
+          .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
       })
       afterAll(() => {
         loginSpy = jest.spyOn(Service, 'login')
           .mockImplementation(() => Promise.resolve(resolved))
         jest.clearAllMocks()
-        loginSpy.mockReset()
       })
 
       it('should return a 401 error', () => {
@@ -125,18 +131,18 @@ describe('User routes', () => {
     describe('if no authorization header was sent with the request ...', () => {
       beforeAll(async () => {
         response = await request(app)
-          .get(url)
+          .post(url)
+          .send(auth)
+          .set('Authorization', `Bearer ${access_token}`)
+          .set('Content-Type', 'application/json')
           .set('Accept', 'application/json')
-        console.log(response.text)
+
       })
       afterAll(() => {
         jest.clearAllMocks()
-        loginSpy.mockReset()
       })
 
-      it('should return a 400 error', () => {
-        expect(response.statusCode).toBe(400)
-      })
+      it.todo('should return a 401 error')
     })
   })
 
@@ -155,6 +161,7 @@ describe('User routes', () => {
       response = await request(app)
         .post(url)
         .send(requestBody)
+        .set('Authorization', `Bearer ${access_token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
     })
@@ -202,6 +209,7 @@ describe('User routes', () => {
       response = await request(app)
         .put(url)
         .send(requestBody)
+        .set('Authorization', `Bearer ${access_token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
     })
@@ -252,6 +260,7 @@ describe('User routes', () => {
       response = await request(app)
         .put(url)
         .send(requestBody)
+        .set('Authorization', `Bearer ${access_token}`)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
     })
@@ -303,6 +312,7 @@ describe('User routes', () => {
     beforeAll(async () => {
       response = await request(app)
         .get(url)
+        .set('Authorization', `Bearer ${access_token}`)
         .set('Accept', 'application/json')
     })
     afterAll(() => {
@@ -344,6 +354,7 @@ describe('User routes', () => {
     beforeAll(async () => {
       response = await request(app)
         .get(url)
+        .set('Authorization', `Bearer ${access_token}`)
         .set('Accept', 'application/json')
     })
     afterAll(() => {
@@ -395,6 +406,7 @@ describe('User routes', () => {
       response = await request(app)
         .put(url)
         .send(requestBody)
+        .set('Authorization', `Bearer ${access_token}`)
         .set('Accept', 'application/json')
     })
     afterAll(() => {
@@ -445,6 +457,7 @@ describe('User routes', () => {
       beforeAll(async () => {
         response = await request(app)
           .delete(url)
+          .set('Authorization', `Bearer ${access_token}`)
           .set('Accept', 'application/json')
       })
       afterAll(() => {
