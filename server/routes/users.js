@@ -7,12 +7,13 @@ const controller = new Controller('users')
 module.exports = router
 
 router.route('/login')
-  .get(
-    Controller.decodeBasicAuth,
+// .all(verifyJWT)  
+.post(
+    controller.validateRequestBody(Service.jsonSchema),
     async (req, res) => {
       try {
         // console.log(req.email, req.password)
-        const { status, data } = await Service.login(req.email, req.password)
+        const { status, data } = await Service.login(req.body.email, req.body.password)
         const json = Controller.formatResponse(req, res, { status, data })
         res.status(status).json(json)
       } catch (error) {
