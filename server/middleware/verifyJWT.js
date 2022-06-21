@@ -3,6 +3,9 @@ const jwks = require('jwks-rsa')
 
 /**
  * Validates the signature of an Auth0 access token.
+ * Requires the following environment variables to be set
+ *    AUTH0_DOMAIN
+ *    AUTH0_AUDIENCE
  */
 const verifyJWT = jwt({
   secret: jwks.expressJwtSecret({
