@@ -26,9 +26,9 @@ Use this tool [(readme.so)](readme.so) to make a good readme.
 2. Cypress (?) (this might be overkill)
 
 ### External Resources / Documentation
-1. Dependency docs
-  a. Express.js
-  b. Auth0 SDK
-  c. Mongoose / MongoDB
-  d. Bcrypt
+Make links to 
+1. Express.js
+2. Auth0 SDK
+3. Mongoose / MongoDB
+4. Bcrypt
 
